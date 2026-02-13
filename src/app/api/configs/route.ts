@@ -4,7 +4,6 @@ import { savedConfigs } from '@/lib/db/schema';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { eq, desc } from 'drizzle-orm';
-import { createDefaultConfig } from '@/stores/configStore'; // For validation or defaults
 
 export async function GET(_request: Request) {
     const session = await auth.api.getSession({

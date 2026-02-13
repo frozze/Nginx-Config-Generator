@@ -2,7 +2,6 @@
 import { useConfigStore } from '@/stores/configStore';
 import Input from '@/components/ui/Input';
 import Toggle from '@/components/ui/Toggle';
-import Select from '@/components/ui/Select';
 import Collapsible from '@/components/ui/Collapsible';
 import { Zap } from 'lucide-react';
 

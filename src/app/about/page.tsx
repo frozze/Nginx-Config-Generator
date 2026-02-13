@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Server, Heart, Github, Globe } from 'lucide-react';
+import { Server, Github, Globe } from 'lucide-react';
 import Link from 'next/link';
 
 export const metadata: Metadata = {

@@ -13,7 +13,7 @@ export default function LoginPage() {
     const router = useRouter();
 
     const handleEmailLogin = async () => {
-        const { data, error } = await authClient.signIn.email({
+        const { error } = await authClient.signIn.email({
             email,
             password
         });

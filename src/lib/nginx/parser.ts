@@ -1,4 +1,4 @@
-import { NginxConfig, LocationConfig, UpstreamConfig } from './types';
+import { NginxConfig, LocationConfig } from './types';
 import { createDefaultConfig, createDefaultLocation, createDefaultUpstreamServer } from '../../stores/configStore';
 
 // ─── 1. Tokenizer ────────────────────────────────────────────────────────────
