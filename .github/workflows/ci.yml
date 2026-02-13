@@ -17,10 +17,33 @@ jobs:
       - run: npm test
       - run: npm run build
 
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
   deploy:
     needs: build-and-test
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
+    permissions:
+      packages: read
     steps:
       - name: Deploy to VPS
         uses: appleboy/ssh-action@master
@@ -29,9 +52,16 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd ${{ secrets.TARGET_DIR }}
-            git pull origin main
-            npm install
-            npm run build
-            pm2 restart nginx-config-generator || pm2 start npm --name "nginx-config-generator" -- start
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            docker stop nginx-config-generator || true
+            docker rm nginx-config-generator || true
+            docker pull ghcr.io/${{ github.repository }}:main
+            docker run -d \
+              --name nginx-config-generator \
+              -p 3000:3000 \
+              -v ${{ secrets.TARGET_DIR }}:/app/data \
+              -v ${{ secrets.TARGET_DIR }}/.env:/app/.env.production.local \
+              --restart unless-stopped \
+              ghcr.io/${{ github.repository }}:main
+
 
