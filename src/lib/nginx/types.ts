@@ -16,6 +16,7 @@ export type LocationType = 'static' | 'proxy' | 'redirect' | 'custom';
 export interface LocationConfig {
     id: string;
     path: string;
+    matchType: 'prefix' | 'exact' | 'regex' | 'regex_case_insensitive'; // Added for parser support
     type: LocationType;
     // Static
     root: string;
@@ -105,6 +106,7 @@ export interface NginxConfig {
     performance: PerformanceConfig;
     logging: LoggingConfig;
     upstream: UpstreamConfig;
+    customDirectives?: string; // Added for top-level unknown directives
 }
 
 export interface ConfigWarning {

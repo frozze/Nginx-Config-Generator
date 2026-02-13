@@ -1,12 +1,19 @@
-// ─── Zustand Store — Nginx Config State ────────────────────────────────────
 'use client';
 import { create } from 'zustand';
 import type { NginxConfig, LocationConfig, UpstreamServer } from '@/lib/nginx/types';
 
+const generateId = () => {
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+        return crypto.randomUUID();
+    }
+    return Math.random().toString(36).substring(2, 15);
+};
+
 export function createDefaultLocation(id?: string): LocationConfig {
     return {
-        id: id || crypto.randomUUID(),
+        id: id || generateId(),
         path: '/',
+        matchType: 'prefix',
         type: 'static',
         root: '/var/www/html',
         tryFiles: '$uri $uri/ =404',
@@ -24,7 +31,7 @@ export function createDefaultLocation(id?: string): LocationConfig {
 
 export function createDefaultUpstreamServer(id?: string): UpstreamServer {
     return {
-        id: id || crypto.randomUUID(),
+        id: id || generateId(),
         address: '127.0.0.1:8080',
         weight: 1,
         maxFails: 3,
