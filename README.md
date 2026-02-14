@@ -1,20 +1,16 @@
-<!-- Banner image placeholder -->
 <div align="center">
   
   <h1>NginxConfig</h1>
   <p><strong>Visual Nginx configuration generator. Free, open-source, runs in your browser.</strong></p>
 
   <p>
-    <a href="https://nginxconfig.io">Live Demo</a> ·
     <a href="#features">Features</a> ·
     <a href="#self-hosting">Self-Hosting</a> ·
     <a href="#contributing">Contributing</a>
   </p>
 
   <p>
-    <a href="https://github.com/frozze/Nginx-Config-Generator/stargazers"><img src="https://img.shields.io/github/stars/frozze/Nginx-Config-Generator?style=social" /></a>
     <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-blue" /></a>
-    <a href="https://github.com/frozze/Nginx-Config-Generator/actions"><img src="https://img.shields.io/github/actions/workflow/status/frozze/Nginx-Config-Generator/ci.yml" /></a>
   </p>
 </div>
 
