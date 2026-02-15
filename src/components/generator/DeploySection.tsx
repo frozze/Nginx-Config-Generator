@@ -34,12 +34,12 @@ export default function DeploySection() {
                                     <img
                                         src={provider.imageLight}
                                         alt={`${provider.name} Referral Badge`}
-                                        className="w-full h-auto max-h-[50px] object-contain dark:hidden"
+                                        className="theme-img-light w-full h-auto max-h-[50px] object-contain"
                                     />
                                     <img
                                         src={provider.imageDark}
                                         alt={`${provider.name} Referral Badge`}
-                                        className="w-full h-auto max-h-[50px] object-contain hidden dark:block"
+                                        className="theme-img-dark w-full h-auto max-h-[50px] object-contain"
                                     />
                                 </>
                             ) : provider.image ? (
