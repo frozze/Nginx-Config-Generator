@@ -21,7 +21,8 @@ export const affiliateProviders: AffiliateProvider[] = [
     {
         name: 'Vultr',
         slug: 'vultr',
-        url: 'https://www.vultr.com/?ref=YOUR_CODE',
+        url: 'https://www.vultr.com/?ref=9868399',
+        image: 'https://components.vultr.com/public/logos/vultr-logo.svg',
         tagline: 'High performance cloud',
         credit: '$300 free credit',
         color: '#007BFC',
