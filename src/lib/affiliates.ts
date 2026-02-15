@@ -5,15 +5,17 @@ export interface AffiliateProvider {
     tagline: string;
     credit: string;
     color: string;
+    image?: string;
 }
 
 export const affiliateProviders: AffiliateProvider[] = [
     {
         name: 'DigitalOcean',
         slug: 'digitalocean',
-        url: 'https://www.digitalocean.com/?refcode=YOUR_CODE&utm_campaign=Referral_Invite&utm_medium=Referral_Program',
+        url: 'https://www.digitalocean.com/?refcode=fe1b9bfc479d&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge',
+        image: 'https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%202.svg',
         tagline: 'Simple cloud hosting',
-        credit: '$200 free credit for 60 days',
+        credit: '$200 free credit',
         color: '#0061FF',
     },
     {

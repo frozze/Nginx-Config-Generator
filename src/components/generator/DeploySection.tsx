@@ -25,21 +25,34 @@ export default function DeploySection() {
                             target="_blank"
                             rel="sponsored noopener"
                             onClick={() => trackAffiliateClick(provider.slug)}
-                            className="group flex flex-col gap-2 p-4 rounded-xl border border-dark-700 bg-dark-900/50 hover:bg-dark-800 hover:border-dark-600 transition-all"
+                            className={`group flex flex-col gap-2 p-4 rounded-xl border border-dark-700 bg-dark-900/50 hover:bg-dark-800 hover:border-dark-600 transition-all ${provider.image ? 'items-center justify-center p-0 overflow-hidden border-none bg-transparent hover:bg-transparent' : ''
+                                }`}
                         >
-                            <div className="flex items-center justify-between">
-                                <span className="font-semibold text-sm text-dark-300 group-hover:text-white transition-colors">
-                                    {provider.name}
-                                </span>
-                                <ExternalLink className="w-3.5 h-3.5 text-dark-500 group-hover:text-accent-400 transition-colors" />
-                            </div>
-                            <span className="text-xs text-dark-500">{provider.tagline}</span>
-                            <span
-                                className="text-xs font-medium mt-auto"
-                                style={{ color: provider.color }}
-                            >
-                                {provider.credit}
-                            </span>
+                            {provider.image ? (
+                                // Badge image (e.g. DigitalOcean)
+                                <img
+                                    src={provider.image}
+                                    alt={`${provider.name} Referral Badge`}
+                                    className="w-full h-auto max-h-[120px] object-contain"
+                                />
+                            ) : (
+                                // Standard card
+                                <>
+                                    <div className="flex items-center justify-between w-full">
+                                        <span className="font-semibold text-sm text-dark-300 group-hover:text-white transition-colors">
+                                            {provider.name}
+                                        </span>
+                                        <ExternalLink className="w-3.5 h-3.5 text-dark-500 group-hover:text-accent-400 transition-colors" />
+                                    </div>
+                                    <span className="text-xs text-dark-500 w-full">{provider.tagline}</span>
+                                    <span
+                                        className="text-xs font-medium mt-auto w-full"
+                                        style={{ color: provider.color }}
+                                    >
+                                        {provider.credit}
+                                    </span>
+                                </>
+                            )}
                         </a>
                     ))}
                 </div>
