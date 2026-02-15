@@ -46,6 +46,9 @@ export const metadata: Metadata = {
     apple: '/icon.svg',
   },
   robots: { index: true, follow: true },
+  verification: {
+    google: 'UaGSTg1FeKpfsGZr80OZu0MK23BdH9qqZJTOPK1epyI',
+  },
 };
 
 export default function RootLayout({
