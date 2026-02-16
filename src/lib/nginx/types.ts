@@ -5,7 +5,7 @@ export interface SSLConfig {
     certificatePath: string;
     keyPath: string;
     httpRedirect: boolean;
-    protocols: string[];
+    protocols: readonly string[];
     enableHSTS: boolean;
     enableOCSP: boolean;
     preset: 'modern' | 'intermediate' | 'legacy';
@@ -27,7 +27,7 @@ export interface LocationConfig {
     // Proxy
     proxyPass: string;
     proxyWebSocket: boolean;
-    proxyHeaders: { key: string; value: string }[];
+    proxyHeaders: readonly { key: string; value: string }[];
     // Redirect
     redirectUrl: string;
     redirectCode: 301 | 302;
@@ -41,8 +41,8 @@ export interface SecurityConfig {
     rateBurst: number;
     securityHeaders: boolean;
     hideVersion: boolean;
-    ipAllowlist: string[];
-    ipDenylist: string[];
+    ipAllowlist: readonly string[];
+    ipDenylist: readonly string[];
     basicAuth: boolean;
     basicAuthRealm: string;
     basicAuthFile: string;
@@ -50,7 +50,7 @@ export interface SecurityConfig {
 
 export interface PerformanceConfig {
     gzip: boolean;
-    gzipTypes: string[];
+    gzipTypes: readonly string[];
     brotli: boolean;
     staticCaching: boolean;
     cacheExpiry: string;
@@ -81,7 +81,7 @@ export interface UpstreamServer {
 export interface UpstreamConfig {
     enabled: boolean;
     name: string;
-    servers: UpstreamServer[];
+    servers: readonly UpstreamServer[];
     method: 'round-robin' | 'least_conn' | 'ip_hash' | 'random';
 }
 
@@ -90,7 +90,7 @@ export interface ReverseProxyConfig {
     backendAddress: string;
     webSocket: boolean;
     realIpHeaders: boolean;
-    customHeaders: { key: string; value: string }[];
+    customHeaders: readonly { key: string; value: string }[];
 }
 
 export interface NginxConfig {
@@ -98,10 +98,10 @@ export interface NginxConfig {
     listenPort: number;
     listen443: boolean;
     rootPath: string;
-    indexFiles: string[];
+    indexFiles: readonly string[];
     ssl: SSLConfig;
     reverseProxy: ReverseProxyConfig;
-    locations: LocationConfig[];
+    locations: readonly LocationConfig[];
     security: SecurityConfig;
     performance: PerformanceConfig;
     logging: LoggingConfig;

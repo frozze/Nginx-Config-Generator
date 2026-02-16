@@ -1,4 +1,4 @@
-import { NginxConfig, LocationConfig } from './types';
+import { NginxConfig, LocationConfig, UpstreamServer } from './types';
 import { createDefaultConfig, createDefaultLocation, createDefaultUpstreamServer } from '../../stores/configStore';
 
 // ─── 1. Tokenizer ────────────────────────────────────────────────────────────
@@ -215,7 +215,7 @@ export function astToConfig(ast: NginxAST): ImportResult {
             } else if (node.type === 'block') {
                 if (node.name === 'location') {
                     const loc = mapLocationBlock(node, config);
-                    if (loc) config.locations.push(loc);
+                    if (loc) (config.locations as LocationConfig[]).push(loc);
                 } else {
                     warnings.push(`Ignored unsupported block "${node.name}" inside server.`);
                 }
@@ -247,7 +247,7 @@ export function astToConfig(ast: NginxAST): ImportResult {
                         if (arg.startsWith('max_fails=')) server.maxFails = parseInt(arg.split('=')[1]) || 1;
                         if (arg.startsWith('fail_timeout=')) server.failTimeout = parseInt(arg.split('=')[1]) || 30;
                     });
-                    config.upstream!.servers.push(server);
+                    (config.upstream!.servers as UpstreamServer[]).push(server);
                 } else if (['least_conn', 'ip_hash', 'random'].includes(node.name)) {
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     config.upstream!.method = node.name as any;

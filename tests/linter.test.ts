@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { lintConfig, type LintSeverity } from '../src/lib/nginx/linter';
-import type { NginxConfig } from '../src/lib/nginx/types';
+import type { NginxConfig, SSLConfig, ReverseProxyConfig, SecurityConfig, PerformanceConfig, UpstreamConfig } from '../src/lib/nginx/types';
 
 type DeepPartial<T> = {
     [P in keyof T]?: T[P] extends readonly (infer U)[]
@@ -95,12 +95,12 @@ function makeConfig(overrides: DeepPartial<NginxConfig> = {}): NginxConfig {
 
     const config = { ...defaults, ...overrides } as NginxConfig;
 
-    if (overrides.ssl) config.ssl = { ...defaults.ssl, ...overrides.ssl };
-    if (overrides.reverseProxy) config.reverseProxy = { ...defaults.reverseProxy, ...overrides.reverseProxy };
-    if (overrides.security) config.security = { ...defaults.security, ...overrides.security };
-    if (overrides.performance) config.performance = { ...defaults.performance, ...overrides.performance };
+    if (overrides.ssl) config.ssl = { ...defaults.ssl, ...overrides.ssl } as SSLConfig;
+    if (overrides.reverseProxy) config.reverseProxy = { ...defaults.reverseProxy, ...overrides.reverseProxy } as ReverseProxyConfig;
+    if (overrides.security) config.security = { ...defaults.security, ...overrides.security } as SecurityConfig;
+    if (overrides.performance) config.performance = { ...defaults.performance, ...overrides.performance } as PerformanceConfig;
     if (overrides.logging) config.logging = { ...defaults.logging, ...overrides.logging };
-    if (overrides.upstream) config.upstream = { ...defaults.upstream, ...overrides.upstream };
+    if (overrides.upstream) config.upstream = { ...defaults.upstream, ...overrides.upstream } as UpstreamConfig;
 
     return config;
 }
