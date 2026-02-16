@@ -235,6 +235,8 @@ export default function LinterPage() {
 }
 
 // Simple Deep Merge Utility (Immutable)
+// This utility performs a deep merge of a NginxConfig object with partial updates.
+// Arrays are replaced entirely, not merged element-by-element.
 type DeepPartial<T> = T extends readonly (infer U)[]
     ? readonly DeepPartial<U>[]
     : T extends object
@@ -249,12 +251,16 @@ function deepMerge(target: NginxConfig, source: DeepPartial<NginxConfig>): Nginx
             const sourceValue = source[key];
             const targetValue = target[key];
 
+            // Recursively merge nested objects, but replace arrays entirely
             if (isObject(sourceValue) && isObject(targetValue) && !Array.isArray(sourceValue) && !Array.isArray(targetValue)) {
+                // Type assertions needed here because nested objects (like SSLConfig, SecurityConfig)
+                // don't match NginxConfig shape, but the function signature requires NginxConfig
                 output[key] = deepMerge(
                     targetValue as unknown as NginxConfig,
                     sourceValue as unknown as DeepPartial<NginxConfig>
                 );
             } else {
+                // For primitives, arrays, and other values, replace entirely
                 output[key] = sourceValue;
             }
         });
