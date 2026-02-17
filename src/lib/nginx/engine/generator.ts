@@ -78,7 +78,7 @@ export function generateNginxConfig(input: NginxConfig): GenerationResult {
         if (input.serverName) {
             push(`${ind(1)}server_name ${input.serverName};`);
         }
-        push(`${ind(1)}return 301 https://$server_name$request_uri;`);
+        push(`${ind(1)}return 301 https://$host$request_uri;`);
         push('}');
         blank();
     }
@@ -90,7 +90,10 @@ export function generateNginxConfig(input: NginxConfig): GenerationResult {
     push('server {');
 
     // ── Listen directives ──
-    const port = input.listenPort;
+    const hasCustomLocations = input.locations.length > 0;
+    const hasDefaultProxyLocation = input.reverseProxy.enabled && !hasCustomLocations;
+
+    const port = input.ssl.enabled && input.listen443 ? 443 : input.listenPort;
     const ssl = input.ssl.enabled ? ' ssl' : '';
     const http2 = input.performance?.http2 && input.ssl.enabled ? ' http2' : '';
 
@@ -103,10 +106,10 @@ export function generateNginxConfig(input: NginxConfig): GenerationResult {
     }
 
     // ── Root & index ──
-    if (input.rootPath) {
+    if (input.rootPath && !hasDefaultProxyLocation) {
         push(`${ind(1)}root ${input.rootPath};`);
     }
-    if (input.indexFiles && input.indexFiles.length > 0) {
+    if (input.indexFiles && input.indexFiles.length > 0 && !hasDefaultProxyLocation) {
         push(`${ind(1)}index ${input.indexFiles.join(' ')};`);
     }
     blank();
@@ -126,19 +129,37 @@ export function generateNginxConfig(input: NginxConfig): GenerationResult {
     generateLoggingBlock(input, push, blank);
 
     // ── Locations ──
-    const locations = input.locations.length > 0
+    const locations = hasCustomLocations
         ? input.locations
-        : [{
-            id: 'default',
-            path: '/',
-            matchType: 'prefix' as const,
-            type: 'static' as const,
-            root: input.rootPath || '/var/www/html',
-            tryFiles: '$uri $uri/ =404',
-            index: '', autoindex: false,
-            cacheExpiry: '', proxyPass: '', proxyWebSocket: false, proxyHeaders: [],
-            redirectUrl: '', redirectCode: 301 as const, customDirectives: ''
-        }];
+        : hasDefaultProxyLocation
+            ? [{
+                id: 'default-proxy',
+                path: '/',
+                matchType: 'prefix' as const,
+                type: 'proxy' as const,
+                root: '',
+                tryFiles: '',
+                index: '',
+                autoindex: false,
+                cacheExpiry: '',
+                proxyPass: input.reverseProxy.backendAddress || 'http://127.0.0.1:3000',
+                proxyWebSocket: input.reverseProxy.webSocket,
+                proxyHeaders: input.reverseProxy.customHeaders || [],
+                redirectUrl: '',
+                redirectCode: 301 as const,
+                customDirectives: '',
+            }]
+            : [{
+                id: 'default',
+                path: '/',
+                matchType: 'prefix' as const,
+                type: 'static' as const,
+                root: input.rootPath || '/var/www/html',
+                tryFiles: '$uri $uri/ =404',
+                index: '', autoindex: false,
+                cacheExpiry: '', proxyPass: '', proxyWebSocket: false, proxyHeaders: [],
+                redirectUrl: '', redirectCode: 301 as const, customDirectives: ''
+            }];
 
     push(`${ind(1)}# ─── Location Blocks ───`);
     for (const loc of locations) {
@@ -282,7 +303,8 @@ function generatePerformanceBlock(
     }
 
     if (perf.clientMaxBodySize) {
-        push(`${ind(1)}client_max_body_size ${perf.clientMaxBodySize}${perf.clientMaxBodyUnit};`);
+        const maxBodySizeUnit = perf.clientMaxBodyUnit === 'GB' ? 'g' : 'm';
+        push(`${ind(1)}client_max_body_size ${perf.clientMaxBodySize}${maxBodySizeUnit};`);
     }
 
     if (perf.keepaliveTimeout) {

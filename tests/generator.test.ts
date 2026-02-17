@@ -113,9 +113,51 @@ describe('generateNginxConfig', () => {
         }));
 
         expect(result.config).toContain('listen 80;');
-        expect(result.config).toContain('return 301 https://$server_name$request_uri;');
+        expect(result.config).toContain('return 301 https://$host$request_uri;');
         expect(result.config).toContain('listen 443 ssl;');
         expect(result.config).toContain('ssl_certificate /etc/ssl/cert.pem;');
+    });
+
+    it('should use 443 for SSL when listen443 is enabled', () => {
+        const result = generateNginxConfig(makeMinimalConfig({
+            listenPort: 80,
+            listen443: true,
+            ssl: {
+                enabled: true,
+            },
+        }));
+
+        expect(result.config).toContain('listen 443 ssl;');
+        expect(result.config).toContain('listen [::]:443 ssl;');
+    });
+
+    it('should generate proxy default location when reverse proxy is enabled and no locations provided', () => {
+        const result = generateNginxConfig(makeMinimalConfig({
+            reverseProxy: {
+                enabled: true,
+                backendAddress: 'http://127.0.0.1:4000',
+                webSocket: true,
+            },
+            locations: [],
+        }));
+
+        expect(result.config).toContain('location / {');
+        expect(result.config).toContain('proxy_pass http://127.0.0.1:4000;');
+        expect(result.config).toContain('proxy_set_header Upgrade $http_upgrade;');
+        expect(result.config).toContain('proxy_set_header Connection "upgrade";');
+        expect(result.config).not.toContain('try_files $uri $uri/ =404;');
+    });
+
+    it('should output valid nginx unit for client_max_body_size', () => {
+        const result = generateNginxConfig(makeMinimalConfig({
+            performance: {
+                clientMaxBodySize: 2,
+                clientMaxBodyUnit: 'GB',
+            },
+        }));
+
+        expect(result.config).toContain('client_max_body_size 2g;');
+        expect(result.config).not.toContain('client_max_body_size 2GB;');
     });
 
     it('should generate upstream block when enabled', () => {
